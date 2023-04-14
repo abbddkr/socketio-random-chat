@@ -1,6 +1,8 @@
 # socketio-random-chat
 
 this boilerplate is a demostration of how you can set up a random one to one chat using socket.io which can also be implemented in real-time browser games.
+![bandicam 2023-04-14 23-08-32-220](https://user-images.githubusercontent.com/21991379/232145611-6d4e6660-c528-47dc-ba67-cb05c724375d.gif)
+
 
 ## Recommended IDE Setup
 
