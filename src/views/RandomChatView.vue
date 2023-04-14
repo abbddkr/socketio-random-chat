@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { state, socket, customIO } from "@/helpers/socketio";
 import api from "@/helpers/api";
 export default {
@@ -6,12 +6,18 @@ export default {
   layout: "guest",
   data() {
     return {
-      message: {},
+      message: {
+        roomId: "",
+        sender: "",
+        gender: "",
+        content: "",
+        date: "",
+      },
       disabled: false,
-      messages: [],
+      messages: Array(),
       overlay: false,
       chatReady: false,
-      roomId: 0,
+      roomId: "",
       isLeft: false,
       isWaiting: false,
       isTyping: false,
@@ -21,37 +27,51 @@ export default {
   },
   methods: {
     newChat() {
-      let nickname = JSON.parse(localStorage.getItem("user")).data.nickname;
+      let nickname = JSON.parse(localStorage.getItem("user") || "").data
+        .nickname;
       socket.emit("userDisconnected", { roomId: this.roomId, nickname });
       socket.disconnect();
       window.location.reload();
     },
-    getGenderAvatar(gender) {
+    getGenderAvatar(gender: string) {
       return gender === "male"
         ? "/src/assets/male.png"
         : "/src/assets/female.png";
     },
     sendMessage() {
-      const nickname = JSON.parse(localStorage.getItem("user")).data.nickname;
-      const gender = JSON.parse(localStorage.getItem("user")).data.gender;
+      const nickname = JSON.parse(localStorage.getItem("user") || "").data
+        .nickname;
+      const gender = JSON.parse(localStorage.getItem("user") || "").data.gender;
+      const date: Date = new Date();
 
       this.disabled = true;
       this.message.roomId = this.roomId;
       this.message.sender = nickname;
       this.message.gender = gender;
+      this.message.date = date.toLocaleTimeString();
+
       if (socket.emit("message", this.message)) {
         this.messages.push({
+          id: "uniqueKey", // just to escape type-checkers
           sender: "me",
           gender: this.message.gender,
           message: this.message.content,
           roomId: this.roomId,
+          date: date.toLocaleTimeString(),
         });
         this.disabled = false;
-        this.message = {};
+
+        this.message = {
+          roomId: "",
+          sender: "",
+          gender: "",
+          content: "",
+          date: "",
+        };
       }
     },
     startRandomChat() {
-      const id = JSON.parse(localStorage.getItem("user")).data.id;
+      const id = JSON.parse(localStorage.getItem("user") || "").data.id;
       this.overlay = true;
 
       socket.emit("join", id, () => {
@@ -68,7 +88,7 @@ export default {
     async verifyGuestUser() {
       const res = await api.post(
         "/chat/verify_guest",
-        JSON.parse(localStorage.getItem("user"))?.data
+        JSON.parse(localStorage.getItem("user") || "")?.data
       );
       if (!res.data) {
         this.$router.push({ path: "/" });
@@ -101,6 +121,7 @@ export default {
         sender: msg.sender,
         message: msg.content,
         roomId: msg.roomId,
+        date: msg.date,
       });
     });
 
@@ -151,7 +172,7 @@ export default {
               <b-avatar :src="getGenderAvatar(message.gender)"></b-avatar>
               <p class="m-3">
                 <b class="single-message-sender">{{ message.sender }}</b>
-                <span class="single-message-date">1 Hour Ago</span>
+                <span class="single-message-date">{{ message.date }}</span>
                 <br />
                 <span class="single-message-body">
                   {{ message.message }}
