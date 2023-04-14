@@ -1,6 +1,6 @@
 # socketio-random-chat
 
-This template should help get you started developing with Vue 3 in Vite.
+this boilerplate is a demostration of how you can set up a random one to one chat using socket.io which can also be implemented in real-time browser games.
 
 ## Recommended IDE Setup
 
@@ -60,3 +60,9 @@ But it's still recommended to test the production build with `test:e2e` before d
 npm run build
 npm run test:e2e
 ```
+
+## Server
+
+1. Move to the `api` folder using the command `cd api`.
+2. Install the necessary packages using the command `npm install`.
+3. Run the server using the command `npm start`.
