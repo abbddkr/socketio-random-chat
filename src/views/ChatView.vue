@@ -1,6 +1,6 @@
 <script lang="ts">
-import api from "@/helpers/api";
 import { defineComponent } from "@vue/runtime-core";
+import api from "@/helpers/api";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 export default defineComponent({
@@ -36,7 +36,7 @@ export default defineComponent({
         if (this.v$.form.$anyError) {
           console.error("Form is not validated!");
         } else {
-          const res = await api.post("/chat/guest", this.form);
+          const res = await api.post("/users/guest", this.form);
           if (res.data) {
             localStorage.setItem("user", JSON.stringify(res.data));
             this.$router.push({ path: "/chat/random-chat" });

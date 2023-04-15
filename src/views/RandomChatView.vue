@@ -1,7 +1,9 @@
 <script lang="ts">
+import { defineComponent } from "@vue/runtime-core";
 import { state, socket, customIO } from "@/helpers/socketio";
 import api from "@/helpers/api";
-export default {
+
+export default defineComponent({
   name: "RandomChatView",
   layout: "guest",
   data() {
@@ -87,7 +89,7 @@ export default {
     },
     async verifyGuestUser() {
       const res = await api.post(
-        "/chat/verify_guest",
+        "/users/verify_guest",
         JSON.parse(localStorage.getItem("user") || "")?.data
       );
       if (!res.data) {
@@ -139,7 +141,7 @@ export default {
       this.chatReady = false;
     });
   },
-};
+});
 </script>
 
 <template>
